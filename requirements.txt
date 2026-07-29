@@ -1,16 +1,17 @@
 # Core
 python-dotenv>=1.0.1
 
-# LLM / API client
-openai>=1.51.0
+# LLM / API client (Google Gemini - free tier available)
+google-generativeai>=0.8.3
+langchain-google-genai>=2.0.6
 
 # RAG / Agent framework
 langchain>=0.3.7
 langchain-community>=0.3.5
-langchain-openai>=0.2.6
 
 # Vector store
 chromadb>=0.5.20
+langchain-chroma>=0.1.4
 
 # Document loading & processing
 pypdf>=5.0.1
@@ -18,5 +19,8 @@ pypdf>=5.0.1
 # Web UI (if using Streamlit for the chat interface)
 streamlit>=1.39.0
 
-# Utilities
-tiktoken>=0.8.0
+# Chroma integration for LangChain
+langchain-chroma>=0.1.4
+
+# Groq (for fast/cheap sub-tasks like routing)
+langchain-groq>=0.2.0
