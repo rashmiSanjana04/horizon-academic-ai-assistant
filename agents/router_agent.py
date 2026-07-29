@@ -1,28 +1,39 @@
 """
 agents/router_agent.py
 
-A simple keyword-based router that classifies a student's question
-into a policy category before retrieval happens.
+Classifies a student's question into a policy category.
+Uses Groq (Llama 3.1 8B) — a fast, low-cost model — because
+classification is a simple sub-task that doesn't need deep reasoning.
+"""
+
+from langchain_groq import ChatGroq
+from langchain_core.messages import SystemMessage, HumanMessage
+
+CATEGORIES = ["exam", "late_submission", "appeals", "attendance", "general"]
+
+ROUTER_SYSTEM_PROMPT = f"""You are a question classifier for a university academic \
+policy assistant. Classify the student's question into exactly ONE of these \
+categories: {', '.join(CATEGORIES)}.
+
+Reply with ONLY the category name, nothing else.
 """
 
 
 class RouterAgent:
-    """Routes incoming questions to the correct policy category."""
+    """Routes incoming questions to a policy category using a fast Groq model."""
 
-    CATEGORIES = {
-        "exam": ["exam", "invigilat", "misconduct", "cheat"],
-        "late_submission": ["late", "submission", "deadline", "extension"],
-        "appeals": ["appeal", "remark", "grade dispute", "review"],
-        "attendance": ["attendance", "absent", "present"],
-    }
+    def __init__(self, model: str = "llama-3.1-8b-instant"):
+        self.llm = ChatGroq(model=model, temperature=0)
 
     def route(self, question: str) -> str:
-        """Return the best-matching category for the question, or 'general'."""
-        question_lower = question.lower()
+        messages = [
+            SystemMessage(content=ROUTER_SYSTEM_PROMPT),
+            HumanMessage(content=question),
+        ]
+        result = self.llm.invoke(messages)
 
-        for category, keywords in self.CATEGORIES.items():
-            for keyword in keywords:
-                if keyword in question_lower:
-                    return category
+        category = result.content.strip().lower()
 
-        return "general"
+        if category not in CATEGORIES:
+            return "general"
+        return category
