@@ -114,5 +114,52 @@ Answer + Source Reference
 > Future Improvements
 Add multi-language support (Sinhala/English)
 
+> ## Agent-to-Agent Communication
+
+The assistant uses an 'AgentMessage' protocol to enable communication between specialized agents. When a user submits a question, the 'retrieval_agent' searches the knowledge base and sends the relevant policy context to the 'response_agent' using and 'AgentMessage'. The 'response_agent' validates the received message and generates a clear, source-grounded response based on the retrieved information.
+
+### Message Structure (`agents/message.py`)
+
+
+| sender | Agent sending the message (e.g., 'retrieval_agent') |
+| receiver | Agent the message is intended for |
+| message_type| Type of message (e.g., `context_found`) used to validate the communication |
+| payload | Actual data being passed (user query and |retrieved policy context) |
+
+### Implementation
+
+Student → main.py → RetrievalAgent.send_message()
+                          ↓ (AgentMessage: context_found)
+                     ResponseAgent.receive_message()
+                          ↓
+                     Answer → Student
+
+### Example Run
+
+```
+You: What happens if I submit my assignment 2 days late?
+
+[response_agent] received message from retrieval_agent:
+AgentMessage(
+    from=retrieval_agent,
+    to=response_agent,
+    type=context_found
+)
+
+Assistant: According to the **Late Submission Policy**:
+
+* If you submit your assignment between 24 and 48 hours late (up to 2 days), it will be penalized by 20% of the total marks available.
+* If you submit more than 48 hours (2 days) after the deadline, your work will not be accepted and will be recorded as a non-submission (0 marks), unless you have been granted an official extension or approved mitigating circumstances.
+```
+
+
+
+
+
+
+
+
+
+
 
 Developed as part of an academic assignment for Horizon
