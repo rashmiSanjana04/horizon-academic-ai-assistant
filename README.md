@@ -186,7 +186,8 @@ This project uses different AI models for different agent tasks based on latency
 The assignment recommends using OpenRouter and/or Groq providers. This project uses Groq for the routing task and Google Gemini directly for answer generation and reflection due to free-tier availability and development constraints.
 
 ### ## Live Demo
-🔗 [Try the live app](https://horizon-academic-ai-assistant...streamlit.app)
+🔗 ## Live Demo
+🔗 [Try the live app](https://horizon-academic-ai-assistantbranchmain-aschjdpnzfm2udmw59nfpt.streamlit.app/)
 
 
 
