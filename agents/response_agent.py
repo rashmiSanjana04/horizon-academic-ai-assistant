@@ -7,6 +7,7 @@ citing the source document.
 """
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from agents.message import AgentMessage
 
@@ -26,7 +27,7 @@ Rules:
 class ResponseAgent:
     def __init__(self, model: str = "gemini-flash-latest", temperature: float = 0.2):
         self.llm = ChatGoogleGenerativeAI(model=model, temperature=temperature)
-
+        self.reflection_llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
     def generate_answer(self, question: str, retrieved_chunks) -> str:
         context_blocks = []
         for doc, score in retrieved_chunks:
@@ -77,7 +78,7 @@ class ResponseAgent:
             ),
         ]
 
-        result = self.llm.invoke(reflection_prompt)
+        result = self.reflection_llm.invoke(reflection_prompt)  # changed from self.llm
         raw_content = result.content
 
         if isinstance(raw_content, list):
