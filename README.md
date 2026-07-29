@@ -47,8 +47,6 @@ Agent-based architecture — Separate agents manage retrieval, reasoning, and re
  
 > Tech Stack (component & Technology)
 
-
-
 Language - Python 
 
 Retrieval Pipeline - RAG (Retrieval-Augmented Generation) 
@@ -62,6 +60,40 @@ Agent Framework - (specify: e.g., LangChain / LlamaIndex / custom)
 Environment Management - Python (venv) 
 
 Version Control - Git and GitHub 
+
+> project Structure
+
+horizon-academic-ai-assistant/
+│
+├── agents/           Agent modules (query understanding, routing, response generation)
+├── rag/              RAG pipeline (retriever, embeddings, vector store logic)
+├── data/             Knowledge base — academic policy documents (exam rules, appeals, attendance, etc.)
+├── docs/             Project documentation (proposal, diagrams, reports)
+├── utils/            Helper/utility functions
+│
+├── venv/             Python virtual environment (not tracked in Git)
+├── README.md         Project overview and setup guide
+├── requirements.txt  Python dependencies
+└── .gitignore        Files/folders excluded from version control
+
+> Setup Instructions
+1. Clone the repo
+git clone https://github.com/rashmiSanjana04/horizon-academic-ai-assistant.git
+cd horizon-academic-ai-assistant
+
+2. Create & activate a virtual environment
+python -m venv venv
+.\venv\Scripts\activate      # Windows
+source venv/bin/activate     # macOS/Linux
+
+3. Install dependencies
+pip install -r requirements.txt
+
+4. Setup environment variables
+Create a .env file in the project root (.env.example) and add your API key(s):
+
+5. run the application
+python main.py
 
  > User Flowe 
 
@@ -79,23 +111,8 @@ Answer + Source Reference
       ▼
    Student
 
- # horizon-academic-ai-assistant
-Agentic AI assistant for answering Horizon Campus academic policy related queries using RAG and multiple AI agents.
-
-> project Structure
-
-horizon-academic-ai-assistant/
-│
-├── agents/           Agent modules (query understanding, routing, response generation)
-├── rag/              RAG pipeline (retriever, embeddings, vector store logic)
-├── data/             Knowledge base — academic policy documents (exam rules, appeals, attendance, etc.)
-├── docs/             Project documentation (proposal, diagrams, reports)
-├── utils/            Helper/utility functions
-│
-├── venv/             Python virtual environment (not tracked in Git)
-├── README.md         Project overview and setup guide
-├── requirements.txt  Python dependencies
-└── .gitignore        Files/folders excluded from version control
-
 > Future Improvements
 Add multi-language support (Sinhala/English)
+
+
+Developed as part of an academic assignment for Horizon
