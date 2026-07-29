@@ -55,9 +55,49 @@ class ResponseAgent:
                     text_parts.append(block["text"])
                 elif isinstance(block, str):
                     text_parts.append(block)
-            return "\n".join(text_parts).strip()
+            final_answer = "\n".join(text_parts).strip()
+        else:
+            final_answer = content
 
-        return content
+        return self.reflect_on_answer(final_answer, context_text)
+
+    def reflect_on_answer(self, answer: str, context_text: str) -> str:
+        """Ask the LLM to check whether the answer is grounded in the given context."""
+        reflection_prompt = [
+            SystemMessage(
+                content=(
+                    "You are a strict fact-checker. Given a POLICY CONTEXT and an "
+                    "ANSWER, reply with exactly one word: 'GROUNDED' if every claim "
+                    "in the answer is supported by the context, or 'UNGROUNDED' if "
+                    "the answer contains information not present in the context."
+                )
+            ),
+            HumanMessage(
+                content=f"POLICY CONTEXT:\n{context_text}\n\nANSWER:\n{answer}"
+            ),
+        ]
+
+        result = self.llm.invoke(reflection_prompt)
+        raw_content = result.content
+
+        if isinstance(raw_content, list):
+            text_parts = []
+            for block in raw_content:
+                if isinstance(block, dict) and "text" in block:
+                    text_parts.append(block["text"])
+                elif isinstance(block, str):
+                    text_parts.append(block)
+            verdict = "".join(text_parts)
+        else:
+            verdict = raw_content
+
+        verdict = verdict.strip().upper()
+
+        print(f"[response_agent] reflection verdict: {verdict}")
+
+        if "UNGROUNDED" in verdict:
+            return answer + "\n\n⚠️ Note: Please verify this answer against official Horizon Campus documentation."
+        return answer
 
     def receive_message(self, message: AgentMessage):
         """Receive a structured message from another agent and act on it."""
