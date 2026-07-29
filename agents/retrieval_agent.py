@@ -6,6 +6,7 @@ the most relevant chunks for a given student question.
 """
 
 from rag.pipeline import load_vector_store
+from agents.message import AgentMessage
 
 
 class RetrievalAgent:
@@ -22,3 +23,16 @@ class RetrievalAgent:
             query, k=self.top_k
         )
         return results
+
+    def send_message(self, query: str):
+        """Retrieve chunks and wrap them in a structured message for another agent."""
+        chunks = self.retrieve(query)
+        return AgentMessage(
+            sender="retrieval_agent",
+            receiver="response_agent",
+            message_type="context_found",
+            payload={
+                "query": query,
+                "chunks": chunks
+            }
+        )

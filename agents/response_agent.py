@@ -8,6 +8,7 @@ citing the source document.
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage
+from agents.message import AgentMessage
 
 SYSTEM_PROMPT = """You are the Horizon Academic AI Assistant, a helpful assistant for \
 Horizon Campus students. Answer questions ONLY using the provided policy context below. \
@@ -57,3 +58,15 @@ class ResponseAgent:
             return "\n".join(text_parts).strip()
 
         return content
+
+    def receive_message(self, message: AgentMessage):
+        """Receive a structured message from another agent and act on it."""
+        if message.message_type != "context_found":
+            raise ValueError(f"Unexpected message type: {message.message_type}")
+
+        query = message.payload["query"]
+        chunks = message.payload["chunks"]
+
+        print(f"[response_agent] received message from {message.sender}: {message}")
+
+        return self.generate_answer(query, chunks)

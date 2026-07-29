@@ -13,6 +13,7 @@ load_dotenv()  # Load OPENAI_API_KEY from .env
 
 from agents.retrieval_agent import RetrievalAgent
 from agents.response_agent import ResponseAgent
+from agents.router_agent import RouterAgent
 
 
 def main():
@@ -24,6 +25,7 @@ def main():
 
     retrieval_agent = RetrievalAgent(top_k=4)
     response_agent = ResponseAgent()
+    router_agent = RouterAgent()
 
     while True:
         question = input("\nYou: ").strip()
@@ -32,9 +34,11 @@ def main():
             break
         if not question:
             continue
-
-        retrieved_chunks = retrieval_agent.retrieve(question)
-        answer = response_agent.generate_answer(question, retrieved_chunks)
+        category = router_agent.route(question)
+        print(f"[router_agent] classified question as: {category}")
+        
+        message = retrieval_agent.send_message(question)
+        answer = response_agent.receive_message(message)
 
         print(f"\nAssistant: {answer}")
 
